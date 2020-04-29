@@ -1,0 +1,33 @@
+<template>
+  <div class="page" data-name="ilias">
+    <div class="navbar">
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="#" class="link back">
+            <i class="icon icon-back"></i>
+            <span class="ios-only">Back</span>
+          </a>
+        </div>
+        <div class="title">Ilias</div>
+      </div>
+    </div>
+    <div class="page-content">
+      <iframe width="100%" height="99%" frameborder="0" src="https://ilias.hs-heilbronn.de/login.php" @load="iframeLoaded"></iframe>
+    </div>
+  </div>
+</template>
+<script>
+  return {
+    on: {
+      pageInit: function(e, page) {
+        console.log('Ilias Page initialized ');
+        app.preloader.show();
+      },
+    },
+    methods: {
+      iframeLoaded: function() {
+        app.preloader.hide();
+      }
+    }
+  }
+</script>

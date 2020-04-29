@@ -1,0 +1,540 @@
+<template>
+  <div class="page" data-name="splan">
+    <div class="navbar">
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="#" class="link back">
+            <i class="icon icon-back"></i>
+            <span class="ios-only">Back</span>
+          </a>
+        </div>
+        <div class="title"><i class="far fa-calendar-alt" style="margin-right: 15px"></i>Timetable HHN</div>
+      </div>
+    </div>
+    <!-- Page Content here -->
+    <div class="page-content ptr-content" data-ptr-distance="200">
+      <div class="ptr-preloader">
+        <div class="preloader"></div>
+        <div class="ptr-arrow"></div>
+      </div>
+
+      <!-- Expandable Option Panel-->
+      <div class="list">
+        <ul>
+          <li class="accordion-item accordion-item-opened"><a href="#" class="item-content item-link">
+              <div class="item-inner">
+                <div class="item-title"><i class="fas fa-sliders-h" style="margin-right: 15px"></i>Options</div>
+              </div>
+            </a>
+            <div class="accordion-item-content">
+              <div class="block">
+                <!-- Select Options -->
+                <div class="list inline-labels no-hairlines-md">
+                  <ul>
+                    <li class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title item-label">Course</div>
+                        <div class="item-input-wrap input-dropdown-wrap">
+                          <select id="courseSelect" placeholder="Please choose..." @change="selectCourse">
+                            <!-- fill dynamic with options -->
+                          </select>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title item-label">Group</div>
+                        <div class="item-input-wrap input-dropdown-wrap">
+                          <select id="semesterSelect" placeholder="Please choose..." @change="selectSemester">
+                            <!-- fill dynamic with options -->
+                          </select>
+                        </div>
+                      </div>
+                    </li>
+                    <!--Datepicker-->
+                    <li class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title item-label" style="width: 50%; max-width: 120px;">
+                          <!-- checkbox element -->
+                          <label class="item-checkbox item-content" style="padding-left: 0px">
+                            <input id="dateCheckbox" type="checkbox" name="demo-checkbox" @change="dateChecked" />
+                            <i class="icon icon-checkbox" style="margin-right: 8px"></i>
+                            <div class="item-inner">
+                              <div class="item-title">Date</div>
+                            </div>
+                          </label>
+                        </div>
+                        <div id="divCalendar" class="item-input-wrap disabled">
+                          <input type="text" placeholder="Please choose..." readonly="readonly"
+                            id="date-calendar-modal" />
+                        </div>
+                      </div>
+                    </li>
+                    <!--end Datepicker-->
+                    <li>
+                      <p id="weekcontrol" class="segmented disabled">
+                        <button id="weekback" class="button button-outline color-gray" @click="changeWeek" value="back">
+                          <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <button id="weekback" class="button button-outline color-gray" @click="changeWeek"
+                          value="current">
+                          <i class="fas fa-calendar-week"></i>
+                        </button>
+                        <button id="weekback" class="button button-outline color-gray" @click="changeWeek"
+                          value="forward">
+                          <i class="fas fa-arrow-right"></i>
+                        </button>
+                      </p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <!-- end expandable -->
+      <!-- Day of Week selector -->
+      <div class="block">
+        <p class="segmented">
+          <button id="monbtn" class="button button-outline color-gray" @click="toggleDay" value="0">Mo</button>
+          <button id="tuebtn" class="button button-outline color-gray" @click="toggleDay" value="1">Di</button>
+          <button id="wedbtn" class="button button-outline color-gray" @click="toggleDay" value="2">Mi</button>
+          <button id="thubtn" class="button button-outline color-gray" @click="toggleDay" value="3">Do</button>
+          <button id="fribtn" class="button button-outline color-gray" @click="toggleDay" value="4">Fr</button>
+          <button id="satbtn" class="button button-outline color-gray" @click="toggleDay" value="5">Sa</button>
+        </p>
+      </div>
+      <!-- Splan Content -->
+      <div id="monCards" name="dayCard">
+        <!-- fill dynamic -->
+      </div>
+      <div id="tueCards" name="dayCard">
+        <!-- fill dynamic -->
+      </div>
+      <div id="wedCards" name="dayCard">
+        <!-- fill dynamic -->
+      </div>
+      <div id="thuCards" name="dayCard">
+        <!-- fill dynamic -->
+      </div>
+      <div id="friCards" name="dayCard">
+        <!-- fill dynamic -->
+      </div>
+      <div id="satCards" name="dayCard">
+        <!-- fill dynamic -->
+      </div>
+
+    </div>
+  </div>
+</template>
+<script>
+  return {
+    on: {
+      calendarChange: function (event) {
+        app.dialog.alert('Hi');
+      },
+      pageInit: function () {
+        var app = this.$app;
+        console.log('Profile Page initialized.');
+        var self = this;
+        // init Calendar
+        this.calendarModal = app.calendar.create({
+          inputEl: '#date-calendar-modal',
+          openIn: 'customModal',
+          header: true,
+          footer: true,
+          dateFormat: 'mm-dd-yyyy',
+          on: {
+            closed: function (calendar, event) {
+              self.loadEvents();
+            }
+          }
+        });
+
+        // Pull to refresh content
+        var $ptrContent = $$('.ptr-content');
+        // Add 'refresh' listener on it
+        $ptrContent.on('ptr:refresh', function (e) {
+          let course = document.getElementById("courseSelect").value;
+          let semester = document.getElementById("semesterSelect").value;
+          if (!course || course === "") {
+            console.log('loading courses');
+            self.loadCourses();
+          } else if (!semester || semester === "") {
+            console.log('loading semesters');
+            self.loadSemesters();
+          } else {
+            console.log('loading events');
+            self.loadEvents();
+          }
+          // When loading done, we need to reset it
+          app.ptr.done(); // or e.detail();
+        });
+
+        // todo: init controls
+        // ...
+
+        this.loadCourses();
+      },
+    },
+    // Component Methods
+    methods: {
+      loadCourses: function () {
+        var self = this;
+        app.preloader.show();
+        // remove all
+        let select = document.getElementById("courseSelect");
+        while (select.firstChild) {
+          select.removeChild(select.firstChild);
+        }
+        // add new
+        axios({
+          method: "get",
+          url: serverURL + splanServicePort + '/api/splan/getCourses',
+          timeout: 7000, // Wait for 5 seconds
+        })
+          .then(function (response) {
+            var list = response.data;
+            list.forEach(element => {
+              let select = document.getElementById("courseSelect");
+              let option = document.createElement("option");
+              option.text = element.shortName;
+              option.value = element.id;
+              select.add(option);
+            });
+            console.log('Course options added.');
+
+            let children = document.getElementById("courseSelect").children;
+            let courseName = storage.getItem("course");
+
+            if (courseName) {
+              for (let i = 0; i < children.length; i++) {
+                var tableChild = children[i];
+                if (tableChild.innerText === courseName) {
+                  document.getElementById("courseSelect").value = tableChild.value;
+                }
+              }
+            } else {
+              app.dialog.alert('Login to the Profile Page to get your Splan preselected.');
+            }
+
+            self.loadSemesters();
+          })
+          .catch(function (error) {
+            console.log(error);
+            app.preloader.hide();
+          });
+      },
+      loadSemesters: function () {// remove all
+        var self = this;
+        let courseId = document.getElementById("courseSelect").value;
+        app.preloader.show();
+        let select = document.getElementById("semesterSelect");
+        while (select.firstChild) {
+          select.removeChild(select.firstChild);
+        }
+        axios({
+          method: "get",
+          url: serverURL + splanServicePort + '/api/splan/getSemesters',
+          params: {
+            unit: 26,
+            course: courseId,
+          },
+          timeout: 7000, // Wait for 5 seconds
+        })
+          .then(function (response) {
+            var list = response.data;
+            list.forEach(element => {
+              let select = document.getElementById("semesterSelect");
+              let option = document.createElement("option");
+              option.text = element.shortName;
+              option.value = element.id;
+              select.add(option);
+            });
+            console.log('Semester options added.');
+
+            let courseName = storage.getItem("course");
+            if (courseName) {
+              let semesterId = storage.getItem("semesterId");
+              if (semesterId) {
+                document.getElementById("semesterSelect").value = semesterId;
+              }
+            }
+
+            self.loadEvents();
+          })
+          .catch(function (error) {
+            console.log(error);
+            app.preloader.hide();
+          });
+      },
+      loadEvents: function () {
+        app.preloader.show();
+
+        // remove previous
+        let card = document.getElementById("monCards");
+        while (card.firstChild) {
+          card.removeChild(card.firstChild);
+        }
+        card = document.getElementById("tueCards");
+        while (card.firstChild) {
+          card.removeChild(card.firstChild);
+        }
+        card = document.getElementById("wedCards");
+        while (card.firstChild) {
+          card.removeChild(card.firstChild);
+        }
+        card = document.getElementById("thuCards");
+        while (card.firstChild) {
+          card.removeChild(card.firstChild);
+        }
+        card = document.getElementById("friCards");
+        while (card.firstChild) {
+          card.removeChild(card.firstChild);
+        }
+        card = document.getElementById("satCards");
+        while (card.firstChild) {
+          card.removeChild(card.firstChild);
+        }
+
+        let semesterId = document.getElementById("semesterSelect").value;
+        let date = document.getElementById("date-calendar-modal").value;
+
+        let params;
+        if (document.getElementById("dateCheckbox").checked && date && date.length > 0) {
+          params = {
+            unit: 26,
+            semester: semesterId,
+            date: date,
+          }
+        } else {
+          params = {
+            unit: 26,
+            semester: semesterId,
+          }
+        }
+        axios({
+          method: "get",
+          url: serverURL + splanServicePort + '/api/splan/getEvents',
+          params: params,
+          timeout: 7000, // Wait for 5 seconds
+        })
+          .then(function (response) {
+            var list = response.data.happenings;
+            list.forEach(element => {
+              let cardDiv = document.createElement("div");
+              cardDiv.classList.add("card");
+              let cardHeaderDiv = document.createElement("div");
+              cardHeaderDiv.classList.add("card-header");
+              cardHeaderDiv.innerText = element.orglectureName;
+              cardHeaderDiv.style.backgroundColor = "rgb(" + element.red + "," + element.green + "," + element.blue + ")";
+              let cardContentDiv = document.createElement("div");
+              cardContentDiv.classList.add("card-content", "card-content-padding");
+
+              if (element.roomNames) {
+                let p1 = document.createElement("p");
+                p1.innerText = element.roomNames;
+                cardContentDiv.appendChild(p1);
+              }
+              if (element.singularDate) {
+                let pDate = document.createElement("p");
+                let dateString = element.singularDate;
+                if (isNaN(dateString)) {
+                  let splited = dateString.split('-');
+                  dateString = splited[2] + '.' + splited[1] + '.' + splited[0];
+                } else {
+                  dateString = new Date(dateString);
+                  let yyyy = dateString.getFullYear();
+                  let mm = dateString.getMonth() + 1;
+                  mm = mm < 10 ? '0' + mm : mm;
+                  let dd = dateString.getDate() + 1;
+                  dd = dd < 10 ? '0' + dd : dd;
+                  dateString = dd + '.' + mm + '.' + yyyy;
+                }
+                pDate.innerText = dateString;
+                cardContentDiv.appendChild(pDate);
+              }
+
+              let p2 = document.createElement("p");
+
+              let hs = Math.floor(element.beginMinute / 60);
+              let ms = element.beginMinute % 60;
+              hs = hs < 10 ? '0' + hs : hs;
+              ms = ms < 10 ? '0' + ms : ms;
+              let startTime = `${hs}:${ms}`;
+              let he = Math.floor(element.endMinute / 60);
+              let me = element.endMinute % 60;
+              he = he < 10 ? '0' + he : he;
+              me = me < 10 ? '0' + me : me;
+              let endTime = `${he}:${me}`;
+
+              p2.innerText = startTime + '-' + endTime;
+              cardContentDiv.appendChild(p2);
+
+              let p3 = document.createElement("p");
+              p3.innerText = element.fullOrglectureName;
+              cardContentDiv.appendChild(p3);
+
+              if (element.fullLecturerNames) {
+                let p4 = document.createElement("p");
+                p4.innerText = element.fullLecturerNames;
+                cardContentDiv.appendChild(p4);
+              }
+              if (element.fullNonResponsibleLecturerNames) {
+                let p5 = document.createElement("p");
+                p5.innerText = element.fullNonResponsibleLecturerNames;
+                cardContentDiv.appendChild(p5);
+              }
+
+              cardDiv.appendChild(cardHeaderDiv);
+              cardDiv.appendChild(cardContentDiv);
+
+              switch (element.weekday) {
+                case 0:
+                  let monCards = document.getElementById("monCards");
+                  monCards.appendChild(cardDiv);
+                  break;
+                case 1:
+                  let tueCards = document.getElementById("tueCards");
+                  tueCards.appendChild(cardDiv);
+                  break;
+                case 2:
+                  let wedCards = document.getElementById("wedCards");
+                  wedCards.appendChild(cardDiv);
+                  break;
+                case 3:
+                  let thuCards = document.getElementById("thuCards");
+                  thuCards.appendChild(cardDiv);
+                  break;
+                case 4:
+                  let friCards = document.getElementById("friCards");
+                  friCards.appendChild(cardDiv);
+                  break;
+                case 5:
+                  let satCards = document.getElementById("satCards");
+                  satCards.appendChild(cardDiv);
+                  break;
+                default:
+                  console.log('No weekday defined');
+              }
+            });
+            console.log('Event options added.');
+            let cardElements = document.getElementsByName("dayCard");
+            cardElements.forEach(card => {
+              card.hidden = true;
+            });
+            let activeButtons = document.getElementsByClassName("button-active");
+            if (activeButtons.length > 0) {
+              for (let i = 0; i < activeButtons.length; i++) {
+                activeButtons[i].classList.remove("button-active");
+              }
+            }
+            let btn = document.getElementById("monbtn");
+            btn.classList.add("button-active");
+            let monCards = document.getElementById("monCards");
+            monCards.hidden = false;
+
+            app.preloader.hide();
+          })
+          .catch(function (error) {
+            console.log(error);
+            app.preloader.hide();
+          });
+      },
+      getDate: function () {
+        var date = new Date(this.user.passwordExpiry);
+        this.$app.dialog.alert(date.toLocaleDateString("de-DE"));
+      },
+      toggleDay: function (event) {
+        let activeButtons = document.getElementsByClassName("button-active");
+        if (activeButtons.length > 0) {
+          for (let i = 0; i < activeButtons.length; i++) {
+            activeButtons[i].classList.remove("button-active");
+          }
+        }
+        let btn = event.target;
+        btn.classList.add("button-active");
+        let cardElements = document.getElementsByName("dayCard");
+        cardElements.forEach(card => {
+          card.hidden = true;
+        });
+        switch (btn.value) {
+          case "0":
+            let monCards = document.getElementById("monCards");
+            monCards.hidden = false;
+            break;
+          case "1":
+            let tueCards = document.getElementById("tueCards");
+            tueCards.hidden = false;
+            break;
+          case "2":
+            let wedCards = document.getElementById("wedCards");
+            wedCards.hidden = false;
+            break;
+          case "3":
+            let thuCards = document.getElementById("thuCards");
+            thuCards.hidden = false;
+            break;
+          case "4":
+            let friCards = document.getElementById("friCards");
+            friCards.hidden = false;
+            break;
+          case "5":
+            let satCards = document.getElementById("satCards");
+            satCards.hidden = false;
+            break;
+          default:
+            console.log('No weekday defined');
+        }
+      },
+      selectCourse: function (event) {
+        this.loadSemesters();
+      },
+      selectSemester: function (event) {
+        storage.setItem("semesterId", event.target.value);
+        this.loadEvents();
+      },
+      dateChecked: function () {
+        if (document.getElementById("dateCheckbox").checked) {
+          document.getElementById('divCalendar').classList.remove('disabled');
+          document.getElementById('weekcontrol').classList.remove('disabled');
+          this.calendarModal.setValue([new Date()]);
+          this.loadEvents();
+        } else {
+          let date = this.calendarModal.getValue()[0];
+          document.getElementById('date-calendar-modal').value = "";
+          document.getElementById('divCalendar').classList.add('disabled');
+          document.getElementById('weekcontrol').classList.add('disabled');
+          this.loadEvents();
+        }
+      },
+      dateUpdated: function (event) {
+        let old = document.getElementById("date-calendar-modal").value;
+        if (event.target.value != old) {
+          this.loadEvents();
+        }
+      },
+      changeWeek: function (event) {
+        if (document.getElementById("dateCheckbox").checked) {
+          var newDate = new Date(this.calendarModal.getValue()[0]);
+          switch (event.target.value) {
+            case "back":
+              newDate.setDate(newDate.getDate() - 7);
+              break;
+            case "forward":
+              newDate.setDate(newDate.getDate() + 7);
+              break;
+            case "current":
+            newDate = new Date();
+              break;
+            default:
+              break;
+          }
+          this.calendarModal.setValue([newDate]);
+          this.loadEvents();
+        }
+      },
+    },
+  }
+</script>

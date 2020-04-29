@@ -1,0 +1,6 @@
+FROM java:8
+VOLUME /tmp
+ADD target/semester_dates_service-1.0.0.jar semester_dates_service-1.0.0.jar
+RUN bash -c 'touch /semester_dates_service-1.0.0.jar'
+EXPOSE 8084
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/semester_dates_service-1.0.0.jar"]

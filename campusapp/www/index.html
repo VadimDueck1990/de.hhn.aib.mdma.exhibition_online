@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content:">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#2196f3">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
+  <title>SAM in one</title>
+  <link rel="stylesheet" href="framework7/css/framework7.bundle.min.css">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="css/all.css">
+  <link rel="stylesheet" href="css/icons.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+
+<body class="color-theme-black">
+  <div id="app">
+    <!-- Status bar overlay for fullscreen mode-->
+    <div class="statusbar"></div>
+    <!-- Left panel with cover effect-->
+    <div class="panel panel-left panel-cover">
+      <div class="view">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-inner">
+              <div class="title">
+                <a href="/" class="panel-close">
+                  <i class="fas fa-home" style="margin-right: 10px"></i>SAM in one
+                </a>
+              </div>
+            </div>
+          </div>
+          <!--TODO: add pull to refresh-->
+          <!--          ...            -->
+          <div class="page-content">
+            <!--Left panel content goes here-->
+            <div class="block">Services</div>
+            <div class="list">
+              <ul>
+                <li>
+                  <a href="/splan/" class="item-content item-link panel-close">
+                    <div class="item-inner">
+                      <div class="item-title">
+                        <i class="far fa-calendar-alt" style="margin-right: 15px"></i>Timetable
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="/Email/" class="item-content item-link panel-close">
+                    <div class="item-inner">
+                      <div class="item-title"><i class="fas fa-envelope" style="margin-right: 15px"></i>Email
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="/cantine/" class="item-content item-link panel-close">
+                    <div class="item-inner">
+                      <div class="item-title"><i class="fas fa-utensils" style="margin-right: 15px"></i>Cantine</div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div class="block">Quick Links</div>
+            <div class="list">
+              <ul>
+                <li>
+                  <a href="/ilias/" class="item-content item-link panel-close">
+                    <div class="item-inner">
+                      <div class="item-title"><i class="fas fa-university" style="margin-right: 15px"></i>Ilias HHN
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="/linda/" class="item-content item-link panel-close">
+                    <div class="item-inner">
+                      <!--graduation cap icon is 5px wider-->
+                      <div class="item-title"><i class="fas fa-graduation-cap" style="margin-right: 10px"></i>Linda HHN
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div class="block">Account</div>
+            <div class="list">
+              <ul>
+                <li>
+                  <a href="/profile/" class="item-content item-link panel-close">
+                    <div class="item-inner">
+                      <div class="item-title"><i class="fas fa-user-alt" style="margin-right: 15px"></i>Profil</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="/settings/" class="item-content item-link panel-close">
+                    <div class="item-inner">
+                      <div class="item-title"><i class="fas fa-cog" style="margin-right: 15px"></i>Settings</div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div class="list">
+              <ul>
+                <li>
+                  <a href="/about/" class="item-content item-link panel-close">
+                    <div class="item-inner">
+                      <div class="item-title"><i class="fas fa-info-circle" style="margin-right: 15px"></i>About</div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Right panel with reveal effect-->
+    <div class="panel panel-right panel-reveal">
+      <div class="view">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-inner">
+              <div class="title">Subscription</div>
+            </div>
+          </div>
+          <div class="page-content">
+            <!--Right panel content goes here-->
+            <!--<div class="block">Right panel content goes here</div>-->
+            <div class="list">
+              <ul>
+                <li>
+                  <label class="item-checkbox item-content">
+                    <input id="Semesterplan" type="checkbox" name="subCheckbox" value="Semesterplan" />
+                    <i class="icon icon-checkbox"></i>
+                    <div class="item-inner">
+                      <div class="item-title">Timetable</div>
+                    </div>
+                  </label>
+                </li>
+                <li>
+                  <label class="item-checkbox item-content">
+                    <input id="Veranstaltungen" type="checkbox" name="subCheckbox" value="Veranstaltungen" />
+                    <i class="icon icon-checkbox"></i>
+                    <div class="item-inner">
+                      <div class="item-title">Events & Dates</div>
+                    </div>
+                  </label>
+                </li>
+                <li>
+                  <label class="item-checkbox item-content">
+                    <input id="Mensaplan" type="checkbox" name="subCheckbox" value="Mensaplan" />
+                    <i class="icon icon-checkbox"></i>
+                    <div class="item-inner">
+                      <div class="item-title">Cantineplan</div>
+                    </div>
+                  </label>
+                  <!-- Three Cantine Options -->
+                  <div id="cantine-radio-list" class="list disabled" style="margin-top: 0px">
+                    <ul>
+                      <li>
+                        <label class="item-radio item-content">
+                          <input id="Sontheim" type="radio" name="cantine-radio" value="Sontheim" />
+                          <i class="icon icon-radio" style="margin-right: 20px"></i>
+                          <div class="item-inner">
+                            <div class="item-title">Sontheim</div>
+                          </div>
+                        </label>
+                      </li>
+                      <li>
+                        <label class="item-radio item-content">
+                          <input id="Bildungscampus" type="radio" name="cantine-radio" value="Bildungscampus" />
+                          <i class="icon icon-radio" style="margin-right: 20px"></i>
+                          <div class="item-inner">
+                            <div class="item-title">Bildungscampus</div>
+                          </div>
+                        </label>
+                      </li>
+                      <li>
+                        <label class="item-radio item-content">
+                          <input id="Kuenzelsau" type="radio" name="cantine-radio" value="Kuenzelsau" />
+                          <i class="icon icon-radio" style="margin-right: 20px"></i>
+                          <div class="item-inner">
+                            <div class="item-title">Kuenzelsau</div>
+                          </div>
+                        </label>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="block">Feeds coming soon</div>
+            <div class="list disabled">
+              <ul>
+                <li>
+                  <label class="item-checkbox item-content">
+                    <input type="checkbox" value="library" />
+                    <i class="icon icon-checkbox"></i>
+                    <div class="item-inner">
+                      <div class="item-title">Bibliothek</div>
+                    </div>
+                  </label>
+                </li>
+                <li>
+                  <label class="item-checkbox item-content">
+                    <input type="checkbox" value="linda" />
+                    <i class="icon icon-checkbox"></i>
+                    <div class="item-inner">
+                      <div class="item-title">Prüfungen & Noten</div>
+                    </div>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Your main view/tab, should have "view-main" class. It also has "tab-active" class -->
+    <div id="view-home" class="view view-main tab tab-active">
+      <!-- Page, data-name contains page name which can be used in page callbacks -->
+      <div class="page" data-name="home">
+        <!-- Top Navbar -->
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="left">
+              <a href="#" class="link icon-only panel-open" data-panel="left">
+                <i class="icon f7-icons ios-only">menu</i>
+                <i class="icon material-icons md-only">menu</i>
+              </a>
+            </div>
+            <div class="title sliding">SAM in one</div>
+            <div class="right">
+              <a href="#" class="link icon-only panel-open" data-panel="right">
+                <i class="icon f7-icons ios-only">add</i>
+                <i class="icon material-icons md-only">add</i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scrollable page content-->
+        <div id="homeContent" class="page-content ptr-content" data-ptr-distance="70" data-ptr-mousewheel="true">
+          <!-- Default pull to refresh preloader-->
+          <div class="ptr-preloader">
+            <div class="preloader"></div>
+            <div class="ptr-arrow"></div>
+          </div>
+          <!-- Newsfeed Items -->
+
+          <div class="block-title">Aktuell</div>
+          <div class="list media-list">
+            <ul id="newsfeedMediaList">
+              <!-- replaced by dynamic Content -->
+              <li>
+                <div style="text-align: center">
+                    <p>No Categories selected!<br>Pull to refresh and load Content.</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <br>
+          <br>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Cordova -->
+  <script src="cordova.js"></script>
+
+  <!-- Framework7 library -->
+  <script src="framework7/js/framework7.bundle.min.js"></script>
+
+  <!-- App routes -->
+  <script src="js/routes.js"></script>
+
+  <!-- Your custom app scripts -->
+  <script src="js/app.js"></script>
+  <script src="js/lib/CryptoJS v3.1.2/aes.js"></script>
+
+  <!-- Axios Library to send RestCalls -->
+  <script src="js/lib/axios.min.js"></script>
+</body>
+
+</html>

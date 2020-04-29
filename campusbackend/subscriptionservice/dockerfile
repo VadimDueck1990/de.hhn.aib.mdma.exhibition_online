@@ -1,0 +1,6 @@
+FROM java:8
+VOLUME /tmp
+ADD target/subscriptionservice-1.0.0.jar subscriptionservice-1.0.0.jar
+RUN bash -c 'touch /subscriptionservice-1.0.0.jar'
+EXPOSE 8081
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/subscriptionservice-1.0.0.jar"]

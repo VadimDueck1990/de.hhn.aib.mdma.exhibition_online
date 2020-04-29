@@ -1,0 +1,36 @@
+<template>
+  <div class="page" data-name="mailclient">
+    <div class="navbar">
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="#" class="link back">
+            <i class="icon icon-back"></i>
+            <span class="ios-only">Back</span>
+          </a>
+        </div>
+        <div class="title">Email</div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+  return {
+    on: {
+      pageInit: function () {
+        var app = this.$app;
+        console.log('Email Page initialized.');
+        this.openMail();
+      },
+    },
+    // Component Methods
+    methods: {
+      openMail: function () {
+        if (device.platform === 'Android') {
+          cordova.InAppBrowser.open('https://webmail.stud.hs-heilbronn.de/?_task=mail&_mbox=INBOX', '_blank', 'location=no,toolbar=yes,toolbarposition=top,closebuttoncaption=close');
+        }
+        else
+          window.open("https://webmail.stud.hs-heilbronn.de/");
+      }
+    }
+  }
+</script>

@@ -1,0 +1,237 @@
+<template>
+  <div class="page" data-name="cantine">
+    <div class="navbar">
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="#" class="link back">
+            <i class="icon icon-back"></i>
+            <span class="ios-only">Back</span>
+          </a>
+        </div>
+        <div class="title">Cantine</div>
+      </div>
+    </div>
+    <div class="page-content ptr-content" data-ptr-distance="70" data-ptr-mousewheel="true">
+      <!-- Default pull to refresh preloader-->
+      <div class="ptr-preloader">
+        <div class="preloader"></div>
+        <div class="ptr-arrow"></div>
+      </div>
+
+      <!-- empty content div -->
+      <div id="cantinePlanDiv">
+        <!-- filled dynamic -->
+      </div>
+
+      <br>
+      <br>
+      <br>
+      <br>
+    </div>
+  </div>
+</template>
+<script>
+  return {
+    on: {
+      pageInit: function () {
+        // Pull to refresh content
+        var $ptrContent = $$('.ptr-content');
+        // Add 'refresh' listener on it
+        $ptrContent.on('ptr:refresh', function (e) {
+          setTimeout(function () {
+            console.log('menue updated.');
+
+            // When loading done, we need to reset it
+            app.ptr.done(); // or e.detail();
+          }, 1000);
+          // axios call here to add latest events
+          // prepend 
+          // ...
+        });
+        app.preloader.show();
+        this.loadCantinePlan();
+        console.log('Cantine Page initialized.');
+      },
+    },
+    methods: {
+      loadCantinePlan: function () {
+        axios({
+          method: "get",
+          url: serverURL + cantineServicePort + '/api/canteenPlanRest/getAllData',
+          timeout: 7000, // Wait for 5 seconds
+        })
+          .then(function (response) {
+            let cantineInfo = response.data.locationList;
+            // get content element
+            let cantinePlanDiv = document.getElementById('cantinePlanDiv');
+            // remove old content
+            while (cantinePlanDiv.firstChild) {
+              cantinePlanDiv.removeChild(cantinePlanDiv.firstChild);
+            }
+
+            // init array only once per call
+            let weekday = new Array(7);
+            weekday[0] = "Sonntag";
+            weekday[1] = "Montag";
+            weekday[2] = "Dienstag";
+            weekday[3] = "Mittwoch";
+            weekday[4] = "Donnerstag";
+            weekday[5] = "Freitag";
+            weekday[6] = "Samstag";
+
+            // add new content from response data
+            for (let index = 0; index < cantineInfo.length; index++) {
+              const element = cantineInfo[index];
+
+              // location
+              let blockTitleDiv = document.createElement('div');
+              blockTitleDiv.classList.add('block-title');
+              blockTitleDiv.innerText = element.name;
+              cantinePlanDiv.appendChild(blockTitleDiv);
+
+              let swiperContainerDiv = document.createElement('div');
+              swiperContainerDiv.classList.add('swiper-container', 'swiper-init', 'demo-swiper');
+              // swiperContainerDiv.setAttribute('data-pagination', '{"el": ".swiper-pagination", "hideOnClick": true}');
+
+              let swiperPaginationDiv = document.createElement('div');
+              swiperPaginationDiv.classList.add('swiper-pagination');
+              swiperContainerDiv.appendChild(swiperPaginationDiv);
+
+              let swiperWrapperDiv = document.createElement('div');
+              swiperWrapperDiv.classList.add('swiper-wrapper');
+
+              // eating plans
+              element.eatingPlanList.forEach(eatingPlan => {
+                let swiperSlideDiv = document.createElement('div');
+                swiperSlideDiv.classList.add('swiper-slide');
+
+                let swiperBlockTitleDiv = document.createElement('div');
+                swiperBlockTitleDiv.classList.add('block-title');
+
+                let dateString = eatingPlan.date.split('.');
+                let yyyy = dateString[2];
+                let mm = dateString[1];
+                let dd = dateString[0];
+                let date = new Date(yyyy + '-' + mm + '-' + dd);
+
+                swiperBlockTitleDiv.innerText = weekday[date.getDay()] + ', ' + eatingPlan.date;
+                swiperSlideDiv.appendChild(swiperBlockTitleDiv);
+
+                let cardDataTableDiv = document.createElement('div');
+                cardDataTableDiv.classList.add('card', 'data-table');
+
+                if (eatingPlan.dishList) {
+
+                  let table = document.createElement('table');
+                  let thead = document.createElement('thead');
+                  let trthead = document.createElement('tr');
+
+                  let th0 = document.createElement('th');
+                  th0.classList.add('label-cell');
+                  th0.setAttribute('style', 'padding-left: 10px; padding-right: 5px;');
+                  th0.innerText = 'Gericht';
+                  // let th1 = document.createElement('th');
+                  // th1.classList.add('label-cell');
+                  // th1.innerText = 'Ausgabe';
+                  let th2 = document.createElement('th');
+                  th2.setAttribute('style', 'padding-left: 5px; padding-right: 5px;');
+                  th2.classList.add('numeric-cell');
+                  th2.innerText = 'Studi €';
+                  let th3 = document.createElement('th');
+                  th3.setAttribute('style', 'padding-left: 5px; padding-right: 5px;');
+                  th3.classList.add('numeric-cell');
+                  th3.innerText = 'Bed. €';
+                  let th4 = document.createElement('th');
+                  th4.setAttribute('style', 'padding-left: 5px; padding-right: 10px;');
+                  th4.classList.add('numeric-cell');
+                  th4.innerText = 'Gast €';
+
+                  trthead.appendChild(th0);
+                  // trthead.appendChild(th1);
+                  trthead.appendChild(th2);
+                  trthead.appendChild(th3);
+                  trthead.appendChild(th4);
+                  thead.appendChild(trthead);
+                  table.appendChild(thead);
+
+                  let tbody = document.createElement('tbody');
+                  eatingPlan.dishList.forEach(dish => {
+                    let trtbody = document.createElement('tr');
+
+                    let tdname = document.createElement('td');
+                    tdname.classList.add('label-cell');
+                    tdname.setAttribute('style', 'padding-left: 10px; padding-right: 5px;');
+                    tdname.innerText = dish.name;
+                    trtbody.appendChild(tdname);
+
+                    // let tdausgab = document.createElement('td');
+                    // tdausgab.classList.add('label-cell');
+                    // tdausgab.innerText = dish.output;
+                    // trtbody.appendChild(tdausgab);
+
+                    let tdstud = document.createElement('td');
+                    tdstud.classList.add('numeric-cell');
+                    tdstud.setAttribute('style', 'padding-left: 5px; padding-right: 5px;');
+                    tdstud.innerText = dish.studEur;
+                    trtbody.appendChild(tdstud);
+
+                    let tdbed = document.createElement('td');
+                    tdbed.classList.add('numeric-cell');
+                    tdbed.setAttribute('style', 'padding-left: 5px; padding-right: 5px;');
+                    tdbed.innerText = dish.bedEur;
+                    trtbody.appendChild(tdbed);
+
+                    let tdgast = document.createElement('td');
+                    tdgast.classList.add('numeric-cell');
+                    tdgast.setAttribute('style', 'padding-left: 5px; padding-right: 10px;');
+                    tdgast.innerText = dish.gastEur;
+                    trtbody.appendChild(tdgast);
+
+                    tbody.appendChild(trtbody);
+                  });
+                  let trtbody2 = document.createElement('tr');
+                  /*let tdempty = document.createElement('td');
+                  tdempty.setAttribute('bgcolor', '#FFFFFF');
+                  tdempty.setAttribute('style', 'height: 25px;');
+                  tdempty.setAttribute('colspan', 3);
+                  trtbody2.appendChild(tdempty);*/
+                  tbody.appendChild(trtbody2);
+
+                  table.appendChild(tbody);
+                  cardDataTableDiv.appendChild(table);
+                  swiperSlideDiv.appendChild(cardDataTableDiv);
+                  swiperWrapperDiv.appendChild(swiperSlideDiv);
+                } else {
+                  let ilock = document.createElement('i');
+                  ilock.classList.add('fas', 'fa-lock', 'fa-7x');
+                  ilock.setAttribute('style', 'margin: 16px;');
+                  cardDataTableDiv.setAttribute('style', 'text-align: center;');
+
+                  cardDataTableDiv.appendChild(ilock);
+                  swiperSlideDiv.appendChild(cardDataTableDiv);
+                  swiperWrapperDiv.appendChild(swiperSlideDiv);
+                }
+              });
+
+              //add all elements
+              swiperContainerDiv.appendChild(swiperWrapperDiv);
+              cantinePlanDiv.appendChild(swiperContainerDiv);
+            }
+            var swiper = app.swiper.create('.swiper-container', {
+              speed: 400,
+              spaceBetween: 100,
+              pagination: {
+                el: '.swiper-pagination',
+                hideOnClick: true,
+              },
+            });
+            app.preloader.hide();
+          })
+          .catch(function (error) {
+            app.preloader.hide();
+            console.log(error);
+          });
+      },
+    },
+  }
+</script>

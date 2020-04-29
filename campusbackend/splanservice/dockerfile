@@ -1,0 +1,6 @@
+FROM java:8
+VOLUME /tmp
+ADD target/splanservice-1.0.0.jar splanservice-1.0.0.jar
+RUN bash -c 'touch /splanservice-1.0.0.jar'
+EXPOSE 8080
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/splanservice-1.0.0.jar"]

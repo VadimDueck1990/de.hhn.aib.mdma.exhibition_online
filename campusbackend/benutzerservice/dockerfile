@@ -1,0 +1,6 @@
+FROM java:8
+VOLUME /tmp
+ADD target/benutzerservice-1.0.0.jar benutzerservice-1.0.0.jar
+RUN bash -c 'touch /benutzerservice-1.0.0.jar'
+EXPOSE 8082
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/benutzerservice-1.0.0.jar"]

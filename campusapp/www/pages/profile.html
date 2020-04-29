@@ -1,0 +1,83 @@
+<template>
+  <div class="page" data-name="profile">
+    <div class="navbar">
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="#" class="link back">
+            <i class="icon icon-back"></i>
+            <span class="ios-only">Back</span>
+          </a>
+        </div>
+        <div class="title">My Profile</div>
+      </div>
+    </div>
+    <div class="page-content">
+      <!-- Page Content here -->
+      <div class="block">
+        <div class="item-inner">
+          <div class="item-subtitle">Name:</div>
+          <div class="item-title"><b>{{user.firstname}} {{user.lastname}}</b></div>
+        </div>
+        <br>
+        <div class="item-inner">
+          <div class="item-subtitle">Profile:</div>
+          <div class="item-title"><b>{{user.profile}} ({{user.active}})</b></div>
+        </div>
+        <br>
+        <div class="item-inner">
+          <div class="item-subtitle">Student Number:</div>
+          <div class="item-title"><b>{{user.studentNumber}}</b></div>
+        </div>
+        <br>
+        <div class="item-inner">
+          <div class="item-subtitle">Study Program:</div>
+          <div class="item-title"><b>{{user.studyProgram}}</b></div>
+        </div>
+        <br>
+        <div class="item-inner">
+          <div class="item-subtitle">Emails:</div>
+          <div class="item-title"><b>{{#each user.emails}}{{this}}<br>{{/each}}</b></div>
+        </div>
+        <br>
+        <div class="item-inner">
+          <div class="item-subtitle">Email Forwarding:</div>
+          <div class="item-title"><b>{{user.forwardEmails}}</b></div>
+        </div>
+        <br>
+        <div class="item-inner">
+          <div class="item-subtitle">Account Expiry Date*:</div>
+          <div class="item-title"><b>{{user.accountExpiry}}</b></div>
+        </div>
+        <br>
+        <div class="item-inner">
+          <div class="item-subtitle">Password Expiry Date*:</div>
+          <div class="item-title"><b>{{user.passwordExpiry}}</b></div>
+        </div>
+        <br>
+        <p>*Date in Format YYYY-MM-DD</p>
+        <br>
+        <br>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+  return {
+    on: {
+      pageInit: function () {
+        console.log('Profile Page initialized.');
+      },
+    },
+    // Component Methods
+    methods: {
+      getDate: function () {
+        var date = new Date(this.user.passwordExpiry);
+        this.$app.dialog.alert(date.toLocaleDateString("de-DE"));
+      },
+      openAlert: function () {
+        var self = this;
+        self.$app.dialog.alert('Hello World');
+      },
+    },
+  }
+</script>

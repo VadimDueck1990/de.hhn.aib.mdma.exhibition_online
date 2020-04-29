@@ -1,0 +1,36 @@
+<template>
+  <div class="page" data-name="linda">
+    <div class="navbar">
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="#" class="link back">
+            <i class="icon icon-back"></i>
+            <span class="ios-only">Back</span>
+          </a>
+        </div>
+        <div class="title">Linda HHN</div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+  return {
+    on: {
+      pageInit: function () {
+        var app = this.$app;
+        console.log('HIS Page initialized.');
+        this.HISLoad();
+      },
+    },
+    // Component Methods
+    methods: {
+      HISLoad: function () {
+        if (device.platform === 'Android') {
+          cordova.InAppBrowser.open('https://stud.zv.hs-heilbronn.de/', '_blank', 'location=no,toolbar=yes,toolbarposition=top,closebuttoncaption=close');
+        }
+        else
+          window.open("https://stud.zv.hs-heilbronn.de/");
+      }
+    },
+  }
+</script>

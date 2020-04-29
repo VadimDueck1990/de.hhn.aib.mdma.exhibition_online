@@ -1,0 +1,6 @@
+FROM java:8
+VOLUME /tmp
+ADD target/meeting_service-1.0.0.jar meeting_service-1.0.0.jar
+RUN bash -c 'touch /meeting_service-1.0.0.jar'
+EXPOSE 8083
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/meeting_service-1.0.0.jar"]

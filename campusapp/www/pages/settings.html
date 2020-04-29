@@ -1,0 +1,131 @@
+<template>
+  <div class="page" data-name="settings">
+    <div class="navbar">
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="#" class="link back">
+            <i class="icon icon-back"></i>
+            <span class="ios-only">Back</span>
+          </a>
+        </div>
+        <div class="title">Settings</div>
+      </div>
+    </div>
+    <div class="page-content">
+
+      <!-- Service Server Url -->
+      <div class="block-title">Service Settings</div>
+      <div class="list no-hairlines-md">
+        <ul>
+          <li class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">Service Server URL</div>
+              <div class="item-input-wrap">
+                <input id="serverUrlInput" type="text" placeholder="http://[Url or IP]" @focusout="updateServiceUrl"
+                  @focus="selectText">
+                <span class="input-clear-button"></span>
+                <div class="item-input-info">!blank field will reset to default value.</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <br>
+
+      <!-- Reset Storage Options -->
+      <div class="block-title">Reset Options</div>
+      <div class="block">
+        <p class="row">
+          <button class="col button button-raised button-outline button-round" @click="resetIndexedDB">Reset Indexed DB
+            *</button>
+        </p>
+        <p>
+          <button class="col button button-raised button-outline button-round" @click="resetStorage">Reset Storage
+            **</button>
+        </p>
+      </div>
+      <div class="block">
+        <table>
+          <tr>
+            <td valign="top">
+              <p>*</p>
+            </td>
+            <td>
+              <p>Userprofile data and newsfeed items are stored in an IndexedDB on your device.</p>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">
+              <p>**</p>
+            </td>
+            <td>
+              <p>The localstorage on your device is used to save credentials, set flags and remember settings. </p>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</template>
+<style>
+  p {
+    margin: 10px 0;
+  }
+</style>
+<script>
+  return {
+    // Component Methods
+    methods: {
+      resetStorage: function (event) {
+        console.log('Clearing LocalStorage!');
+        app.dialog.confirm('Credentials, Flags and Settings will reset!', function () {
+          storage.clear();
+          app.dialog.alert('Done. LocalStorage cleared.');
+        });
+      },
+      resetIndexedDB: function () {
+        var req = indexedDB.deleteDatabase('campusappDB');
+        req.onsuccess = function () {
+          app.dialog.alert("Deleted database successfully");
+          console.log("Deleted database successfully");
+        };
+        req.onerror = function () {
+          app.dialog.alert("Couldn't delete database");
+          console.log("Couldn't delete database");
+        };
+        req.onblocked = function () {
+          console.log("Couldn't delete database due to the operation being blocked");
+        };
+      },
+      updateServiceUrl: function () {
+        let serverUrlInput = document.getElementById('serverUrlInput');
+        if (serverUrlInput.value.trim() === "") {
+          // reset
+          serverURL = defaultserverURL;
+          serverUrlInput.value = defaultserverURL;
+          storage.setItem('serverURL', serverURL);
+        } else {
+          // save new
+          serverURL = serverUrlInput.value.trim();
+          if (!serverURL.startsWith("http://") /*&& !serverURL.startsWith("https://")*/) {
+            serverURL = "http://" + serverURL;
+            serverUrlInput.value = serverURL;
+          }
+          storage.setItem('serverURL', serverURL);
+        }
+        console.log('Server Url updated');
+      },
+      selectText: function (event) {
+        event.target.select();
+      },
+    },
+    // Page Events
+    on: {
+      pageInit: function (e, page) {
+        console.log('pageInit: settings');
+        let serverUrlInput = document.getElementById('serverUrlInput');
+        serverUrlInput.value = serverURL;
+      },
+    }
+  }
+</script>
